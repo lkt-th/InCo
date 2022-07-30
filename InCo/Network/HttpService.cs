@@ -16,9 +16,9 @@ namespace InCo.Network
     public class HttpService : IHttpService
     {
         private readonly IHttpServiceAsync httpService;
-        public HttpService(Uri host, JsonSerializerSettings settings = null)
+        public HttpService(Uri host, JsonSerializerSettings settings = null, bool ignoreCertificateValidation = false)
         {
-            httpService = new HttpServiceAsync(host, settings);
+            httpService = new HttpServiceAsync(host, settings, ignoreCertificateValidation);
         }
 
         public T Get<T>(string url)
