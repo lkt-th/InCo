@@ -22,9 +22,10 @@ namespace InCo.Network
     public class HttpServiceAsync : IHttpServiceAsync
     {
         private readonly HttpClient _httpClient;
+        private readonly bool _ignoreCertificateValidation;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public HttpServiceAsync(Uri host, JsonSerializerSettings settings = null)
+        public HttpServiceAsync(Uri host, JsonSerializerSettings settings = null, bool ignoreCertificateValidation = false)
         {
             if (settings != null)
                 _serializerSettings = settings;
@@ -36,6 +37,8 @@ namespace InCo.Network
 
             _httpClient = new HttpClient(clientHandler) { BaseAddress = host };
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("InCo/0.1");
+
+            _ignoreCertificateValidation = ignoreCertificateValidation;
         }
 
         public async Task<T> GetAsync<T>(string url)
@@ -43,7 +46,8 @@ namespace InCo.Network
             TaskCompletionSource<T> source = new TaskCompletionSource<T>();
 
             // Ignore Ssl validation.
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            if (_ignoreCertificateValidation)
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
             // Add TLS 1.2 Supported.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -77,7 +81,8 @@ namespace InCo.Network
                 if (data == null) content = null;
 
                 // Ignore Ssl validation.
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                if (_ignoreCertificateValidation)
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 // Add TLS 1.2 Supported.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -128,7 +133,8 @@ namespace InCo.Network
             try
             {
                 // Ignore Ssl validation.
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                if (_ignoreCertificateValidation)
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 // Add TLS 1.2 Supported.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -162,6 +168,13 @@ namespace InCo.Network
             TaskCompletionSource<T> source = new TaskCompletionSource<T>();
 
             FormUrlEncodedContent content = new FormUrlEncodedContent(data);
+
+            // Ignore Ssl validation.
+            if (_ignoreCertificateValidation)
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            // Add TLS 1.2 Supported.
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
             var response = await _httpClient.PostAsync(url, content);
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -203,7 +216,8 @@ namespace InCo.Network
                 if (data == null) content = null;
 
                 // Ignore Ssl validation.
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                if (_ignoreCertificateValidation)
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 // Add TLS 1.2 Supported.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -221,8 +235,6 @@ namespace InCo.Network
                 }
                 else
                 {
-                    var ex = JsonConvert.DeserializeObject<Exception>(responseContent);
-
                     source.SetException(new Exception(response.ReasonPhrase));
                 }
             }

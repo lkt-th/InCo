@@ -16,7 +16,6 @@ namespace InCo.Network
     public class HttpService : IHttpService
     {
         private readonly IHttpServiceAsync httpService;
-        private readonly JsonSerializerSettings _serializerSettings;
         public HttpService(Uri host, JsonSerializerSettings settings = null)
         {
             httpService = new HttpServiceAsync(host, settings);
