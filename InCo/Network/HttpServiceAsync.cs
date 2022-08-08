@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace InCo.Network
 {
@@ -32,8 +33,11 @@ namespace InCo.Network
             else
                 _serializerSettings = new JsonSerializerSettings();
 
-            var clientHandler = new HttpClientHandler() { UseCookies = true };
-            clientHandler.CookieContainer = new CookieContainer();
+            var clientHandler = new HttpClientHandler
+            {
+                UseCookies = true,
+                CookieContainer = new CookieContainer()
+            };
 
             _httpClient = new HttpClient(clientHandler) { BaseAddress = host };
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("InCo/0.1");
@@ -122,6 +126,7 @@ namespace InCo.Network
                     string fileName = Path.GetFileName(file);
                     var fs = File.OpenRead(file);
                     StreamContent content = new StreamContent(fs);
+                    content.Headers.Add("Content-Type", MimeMapping.GetMimeMapping(file));
                     multipart.Add(content, "File", fileName);
                 }
                 else

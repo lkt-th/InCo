@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+	<id>$id$</id>
+	<version>$version$</version>
+	<title>$title$</title>
+	<authors>Likhit Cghoompoopati</authors>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<license type="expression">MIT</license>
+	<!-- <icon>icon.png</icon> -->
+	<projectUrl>https://github.com/lkt-th/InCo/</projectUrl>
+	<description>Some .Net Framework Helper Class.</description>
+	<releaseNotes>Some .Net Framework Helper Class..</releaseNotes>
+	<copyright>$copyright$</copyright>
+	<tags>InCo</tags>
+	  <dependencies>
+		  <group targetFramework=".NETFramework4.5.2" />
+	  </dependencies>
+  </metadata>
+</package>
